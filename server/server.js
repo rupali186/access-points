@@ -48,6 +48,26 @@ app.delete('/users/me/token', authenticate, (req, res) => {
   });
 });
 
+app.delete('/users/me',authenticate,(req,res)=>{
+	var id=req.user._id;
+	if(!ObjectID.isValid(id)){
+		res.status(400).send({});
+		return console.log('ID is invalid');
+	};
+	User.findOneAndRemove({
+		_id:id
+	}).then((user)=>{
+		if(!user){
+			res.status(404).send({});
+		}else{
+			res.status(200).send({user});
+		}
+		console.log(user);
+	},(e)=>{
+		res.status(400).send(e);
+	});
+});
+
 app.get('/users/me',authenticate,(req,res)=>{
 	res.send(req.user);
 });
@@ -78,6 +98,73 @@ app.get('/users/:id',(req,res)=>{
 		res.status(400).send(e);
 	});
 	//res.send(req.params);
+});
+
+app.post('/orders',authenticate,(req,res)=>{
+	console.log(req.body);
+	var order=new Order({
+		size:req.body.size,
+		price:req.body.price,
+		category_id:req.body.category_id,
+		product_id:req.body.product_id,
+		del_date:req.body.del_date,
+		weight:req.body.weight,
+		user_id:req.user._id
+	});
+	order.save().then((order)=>{
+		res.send(order);
+	},(e)=>{
+		res.status(400).send(e);
+	});
+});
+
+app.get('/orders',(req,res)=>{
+	Order.find().then((orders)=>{
+		res.send({orders});
+	},(e)=>{
+		res.status(400).send(e);
+	});
+});
+
+app.get('/orders/:id',(req,res)=>{
+	var id=req.params.id;
+	if(!ObjectID.isValid(id)){
+		res.status(400).send({});
+		return console.log('ID is invalid');
+	}
+	Order.findOne({
+		_id:id,
+	}).then((order)=>{
+		if(order){
+			res.send({order});
+		}else{
+			res.status(404).send({});
+		}
+	},(e)=>{
+		res.status(400).send(e);
+	});
+	//res.send(req.params);
+});
+
+app.delete('/orders/:id',authenticate,(req,res)=>{
+	var id=req.params.id;
+	if(!ObjectID.isValid(id)){
+		res.status(400).send({});
+		return console.log('ID is invalid');
+	};
+	Order.findOneAndRemove({
+		_id:id,
+		user_id:req.user._id
+	}).then((order)=>{
+		if(!order){
+			res.status(404).send({});
+		}else{
+			res.status(200).send({order});
+		}
+		console.log(order);
+	},(e)=>{
+		res.status(400).send(e);
+	});
 });
 
 app.listen(port,()=>{

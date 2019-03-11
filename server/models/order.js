@@ -9,23 +9,23 @@ var OrderSchema=new mongoose.Schema({
 	size:{
 		length:{
 			type:Number,
-			min:1,
+			min:0,
 			required:true
 		},
 		width: {
 			type:Number,
-			min:1,
+			min:0,
 			required:true
 		},
 		height:{
 			type:Number,
-			min:1,
+			min:0,
 			required:true
 		}
 	},
 	price:{
 		type:Number,
-		min:1,
+		min:0,
 		required:true
 	},
 	o_date:{
@@ -34,17 +34,20 @@ var OrderSchema=new mongoose.Schema({
 	},
 	del_date:{
 		type: Date,
+		required:true,
+		min:Date.now
+	},
+	category_id:{
+		type:Number,
 		required:true
 	},
-	category:{
-		id:{
-			type:Number,
-			required:true
-		}
+	product_id:{
+		type:Number,
+		required:true
 	},
 	weight:{
 		type:Number,
-		min:1,
+		min:0,
 		required:true
 	},
 	image:{
@@ -58,18 +61,10 @@ var OrderSchema=new mongoose.Schema({
 		}
 	},
 	status:{
-		delivered: {
-			type: Boolean,
-			default: false
-		},
-		cancelled: {
-			type: Boolean,
-			default:false
-		},
-		failed:{
-			type: Boolean,
-			default:false
-		}
+		type:String,
+		enum: ['delivered', 'cancelled', 'failed','pending'],
+		lowercase:true,
+		default:'pending'
 	}
 	
 });

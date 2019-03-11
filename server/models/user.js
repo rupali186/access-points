@@ -11,6 +11,7 @@ var UserSchema=new mongoose.Schema({
 		trim:true,
 		minlength:1,
 		unique:true,
+		lowercase:true,
 		validate:{
 			validator: validator.isEmail,
 			message:'{VALUE} is not a valid email'
@@ -55,6 +56,7 @@ var UserSchema=new mongoose.Schema({
 	gender:{
 		type:String,
 		enum: ['male', 'female', 'other'],
+		lowercase:true,
 		required:true
 	},
 	last_order_date:{
@@ -80,31 +82,37 @@ var UserSchema=new mongoose.Schema({
 		street:{
 			type:String,
 			minlength:1,
+			uppercase:true,
 			required:true
 		},
 		state:{
 			type:String,
 			minlength:1,
+			uppercase:true,
 			required:true
 		},
 		city:{
 			type:String,
 			minlength:1,
+			uppercase:true,
 			required:true
 		},
 		country:{
 			type:String,
 			minlength:1,
+			uppercase:true,
 			required:true
 		},
 		name:{
 			type:String,
 			minlength:1,
+			uppercase:true,
 			default:this.u_name
 		},
 		landmark:{
 			type:String,
 			minlength:1,
+			uppercase:true,
 			required:true
 		},
 		pincode:{
