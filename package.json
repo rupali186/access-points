@@ -1,0 +1,29 @@
+{
+  "name": "access-points",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+   "start": "node server/server.js",
+    "test": "export NODE_ENV=test||SET \"NODE_ENV=test\"&&mocha --timeout 10000 server/**/*.test.js",
+    "test-watch": "nodemon --exec \"npm test\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
+    "lodash": "^4.17.11",
+    "mongodb": "^3.1.13",
+    "mongoose": "^5.4.18",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "expect": "^24.3.1",
+    "mocha": "^6.0.2",
+    "supertest": "^4.0.0"
+  }
+}
