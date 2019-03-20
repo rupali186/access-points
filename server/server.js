@@ -49,6 +49,16 @@ app.get('/users/newtolocker',(req,res)=>{
 	});
 });
 
+app.get('/users/target',(req,res)=>{
+	var threshold=_.toNumber(req.query.threshold);
+	var limit=_.toNumber(req.query.limit);
+	User.find({del_failures_no:{ $gte: threshold},locker_used:false}).sort({last_order_date:-1}).limit(limit).then((users)=>{
+		res.send({users});
+	},(e)=>{
+		res.status(400).send(e);
+	});
+});
+
 app.get('/users/:id',(req,res)=>{
 	var id=req.params.id;
 	if(!ObjectID.isValid(id)){
@@ -247,7 +257,7 @@ var updateUser=(user,status)=>{
 
 	if(status.localeCompare(Status.NEW)==0){
 		num_orders=num_orders+1;
-		last_order_date=Date.now;
+		last_order_date=new Date();
 	}else if(status.localeCompare(Status.FAILED)==0){
 		del_failures_no=del_failures_no+1;
 	}
