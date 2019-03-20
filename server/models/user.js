@@ -136,10 +136,15 @@ var UserSchema=new mongoose.Schema({
 		default:false
 	}
 });
+
+UserSchema.index({num_orders: 1});
+UserSchema.index({num_orders:-1,locker_used:1});
+
 UserSchema.methods.toJSON=function(){
 	var user=this;
 	var userObject=user.toObject();
-	return _.pick(userObject,['_id','email']);
+	return _.pick(userObject,['_id','u_name','email','phone_no','address','dob','gender','num_orders','acc_creation_date',
+		'last_order_date','locker_used','tokens']);
 }
 UserSchema.methods.generateAuthToken=function(){
 	var user=this;
@@ -210,8 +215,14 @@ UserSchema.pre('save',function(next){
 		next();
 	}
 });
+const indexes = UserSchema.indexes();
+console.log('index:', indexes);
 
 var User=mongoose.model('User',UserSchema);
+
+User.on('index', function(error) {
+    console.log(error.message);
+});
 
 module.exports={
 	User

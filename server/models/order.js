@@ -1,6 +1,10 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
 
+const {Status}=require('./../constants/stringConstants.js');
+const {DeliveryMode}=require('./../constants/stringConstants.js');
+const {PaymentStatus}=require('./../constants/stringConstants.js');
+
 var OrderSchema=new mongoose.Schema({
 	user_id:{
 		required:true,
@@ -62,9 +66,19 @@ var OrderSchema=new mongoose.Schema({
 	},
 	status:{
 		type:String,
-		enum: ['delivered', 'cancelled', 'failed','pending'],
+		enum: [Status.DELIVERED,Status.CANCELLED,Status.FAILED,Status.NEW],
 		lowercase:true,
-		default:'pending'
+		default:Status.NEW
+	},
+	del_mode:{
+		type:String,
+		enum: [DeliveryMode.ACCESS_PTS,DeliveryMode.HOME_DEL,DeliveryMode.STORE_DEL],
+		lowercase:true
+	},
+	payment_status:{
+		type:String,
+		enum:[PaymentStatus.PAID,PaymentStatus.UNPAID],
+		lowercase:true
 	}
 	
 });
