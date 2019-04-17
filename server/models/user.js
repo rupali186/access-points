@@ -44,10 +44,7 @@ var UserSchema=new mongoose.Schema({
 	phone_no:[{
 		type: String,
 		required:true,
-		validate:{
-			validator: validator.isMobilePhone,
-			message:'{VALUE} is not a valid phone no.'
-		}
+		minlength:10
 	}],
 	dob:{
 		type: Date,
@@ -124,11 +121,7 @@ var UserSchema=new mongoose.Schema({
 		contact_no:{
 			type:String,
 			required:true,
-			min:0,
-			validate:{
-				validator: validator.isMobilePhone,
-				message:'{VALUE} is not a valid phone no.'
-			}
+			minlength:10
 		}
 	}],
 	locker_used:{
@@ -140,7 +133,6 @@ var UserSchema=new mongoose.Schema({
 UserSchema.index({num_orders: 1});
 UserSchema.index({num_orders:-1,locker_used:1});
 UserSchema.index({del_failures_no:-1,locker_used:1});
-
 UserSchema.methods.toJSON=function(){
 	var user=this;
 	var userObject=user.toObject();

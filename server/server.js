@@ -33,7 +33,7 @@ app.get('/users',(req,res)=>{
 
 app.get('/users/new',(req,res)=>{
 	var n=_.toNumber(req.query.limit);
-	User.find({num_orders:0}).sort({acc_creation_date:-1}).hint( { num_orders: 1 } ).limit(n).then((users)=>{
+	User.find({num_orders:0}).sort({acc_creation_date:-1}).limit(n).then((users)=>{
 		res.send({users});
 	},(e)=>{
 		res.status(400).send(e);
@@ -159,11 +159,25 @@ app.get('/orders',(req,res)=>{
 	});
 });
 
+app.get('/orders/me',authenticate,(req,res)=>{
+		 // res.send(req.user);
+
+	var userId=req.user._id;
+	if(!ObjectID.isValid(userId)){
+		res.status(400).send({});
+		return console.log('/orders/me ID is invalid'+userId);
+	}
+	Order.find({user_id:req.user._id}).sort({o_date:-1}).then((orders)=>{
+		res.send({orders});
+	},(e)=>{
+		res.status(400).send(e);
+	});
+});
 app.get('/orders/:id',(req,res)=>{
 	var id=req.params.id;
 	if(!ObjectID.isValid(id)){
 		res.status(400).send({});
-		return console.log('ID is invalid');
+		return console.log('/orders/:id ID is invalid');
 	}
 	Order.findOne({
 		_id:id,
@@ -178,6 +192,10 @@ app.get('/orders/:id',(req,res)=>{
 	});
 	//res.send(req.params);
 });
+
+
+
+
 
 app.post('/orders',authenticate,(req,res)=>{
 	console.log(req.body);
