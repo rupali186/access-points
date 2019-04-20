@@ -1,5 +1,8 @@
 require('./config/config');
 
+const couponCode = require('coupon-code');//generate unique coupon codes
+const Promise = require('bluebird');
+var nodemailer=require('nodemailer');
 const express=require('express');
 const _=require('lodash');
 const bodyParser=require('body-parser');
@@ -9,13 +12,22 @@ var rp = require('request-promise');
 const {mongoose}=require('./db/mongoose.js');
 const {Order}=require('./models/order.js');
 const {User}=require('./models/user.js');
+const {coupons}=require('./models/coupon.js');
 const {authenticate}=require('./middleware/authenticate.js');
 const {Status}=require('./constants/stringConstants.js');
 const {Url}=require('./constants/stringConstants.js');
-
+const {EmailConfig}=require('./config/emailConfig.js');
 const port=process.env.PORT;
 
 var app=express();
+
+var transporter=nodemailer.createTransport({
+service:'gmail',
+auth:{
+  user:EmailConfig.EMAIL,
+  pass:EmailConfig.PASSWORD
+}
+});
 
 app.use(bodyParser.json());
 
@@ -264,6 +276,83 @@ app.delete('/orders/:id',authenticate,(req,res)=>{
 	},(e)=>{
 		res.status(400).send(e);
 	});
+});
+// app.post("/generate", function(request, response) {
+//       var threshold=request.body.threshold;
+//       var query = { unattended_deliveries: { $gt: threshold } };
+//       users.find(query,function(err, result) {
+//       if (err) throw err;
+//      console.log(result);
+//      response.render('generate.ejs',{
+//       result:result
+//      });
+//   });
+//   });
+app.post('/coupons', function (req, res) {
+  //console.log('Moved to add page');
+    coupons.findOne({
+      user_email:req.body.email
+    }).then(coupon=>{
+    	if(coupon){
+        	console.log("already has a code");
+      	}
+    	else{
+  			generateUniqueCode().then(function(code) {
+  				new coupons({
+    			 	code:code,
+   				 	user_email:req.body.email,
+   				 	type:req.body.type
+ 		 	}).save()
+  			.then(console.log('coupon saved.'));
+  			var mailOptions={
+    			 from:EmailConfig.EMAIL,
+   				 to:req.body.email,
+   				 subject:'sending email',
+   				 html: '<p>Your code is</p>'+code
+   			};
+   			transporter.sendMail(mailOptions,function(err,info){
+       			if(err){
+        			console.log(err);
+       			}
+      			else{
+        			console.log('email sent'+info.response);
+					res.status(200).send();
+
+       			}
+   			});
+   
+     		});
+   		}
+	});
+});
+var count = 0;
+// this is code that checks uniqueness and returns a promise
+function check(code) {
+  return new Promise(function(resolve, reject) {
+    setTimeout(function() {
+      count++;
+      // first resolve with false, on second try resolve with true
+      if (count === 1) {
+        console.log(code + ' is not unique');
+        resolve(false);
+      } else {
+        console.log(code + ' is unique');
+        resolve(true);
+      }
+    }, 1000);
+  });
+}
+
+var generateUniqueCode = Promise.method(function() {
+  var code = couponCode.generate({parts:3,partLen:5});
+  return check(code)
+    .then(function(result) {
+      if (result) {
+        return code;//if it is unique then return the code
+      } else {
+        return generateUniqueCode();//else generate a new code 
+      }
+    });
 });
 
 var updateUser=(user,status)=>{
