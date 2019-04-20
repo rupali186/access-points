@@ -2,7 +2,6 @@ require('./config/config');
 
 const couponCode = require('coupon-code');//generate unique coupon codes
 const Promise = require('bluebird');
-var nodemailer=require('nodemailer');
 const express=require('express');
 const _=require('lodash');
 const bodyParser=require('body-parser');
@@ -17,17 +16,13 @@ const {authenticate}=require('./middleware/authenticate.js');
 const {Status}=require('./constants/stringConstants.js');
 const {Url}=require('./constants/stringConstants.js');
 const {EmailConfig}=require('./config/emailConfig.js');
+const {transporter}=require('./notification/nodemailer.js');
+
 const port=process.env.PORT;
 
 var app=express();
 
-var transporter=nodemailer.createTransport({
-service:'gmail',
-auth:{
-  user:EmailConfig.EMAIL,
-  pass:EmailConfig.PASSWORD
-}
-});
+
 
 app.use(bodyParser.json());
 
@@ -277,22 +272,11 @@ app.delete('/orders/:id',authenticate,(req,res)=>{
 		res.status(400).send(e);
 	});
 });
-// app.post("/generate", function(request, response) {
-//       var threshold=request.body.threshold;
-//       var query = { unattended_deliveries: { $gt: threshold } };
-//       users.find(query,function(err, result) {
-//       if (err) throw err;
-//      console.log(result);
-//      response.render('generate.ejs',{
-//       result:result
-//      });
-//   });
-//   });
+
 app.post('/coupons', function (req, res) {
-  //console.log('Moved to add page');
     coupons.findOne({
       user_email:req.body.email
-    }).then(coupon=>{
+    }).then((coupon)=>{
     	if(coupon){
         	console.log("already has a code");
       	}
@@ -302,25 +286,30 @@ app.post('/coupons', function (req, res) {
     			 	code:code,
    				 	user_email:req.body.email,
    				 	type:req.body.type
- 		 	}).save()
-  			.then(console.log('coupon saved.'));
-  			var mailOptions={
-    			 from:EmailConfig.EMAIL,
-   				 to:req.body.email,
-   				 subject:'sending email',
-   				 html: '<p>Your code is</p>'+code
-   			};
-   			transporter.sendMail(mailOptions,function(err,info){
-       			if(err){
-        			console.log(err);
-       			}
-      			else{
-        			console.log('email sent'+info.response);
-					res.status(200).send();
-
-       			}
-   			});
+ 		 		}).save()
+  				.then((coupon)=>{
+  					// res.send(coupon);
+  					console.log('coupon saved.');
+  					var mailOptions={
+    			 		from:EmailConfig.EMAIL,
+   				 		to:req.body.email,
+   				 		subject:'sending email',
+   				 		html: '<p>Your code is</p>'+code
+   					};
+   					transporter.sendMail(mailOptions,function(err,info){
+       					if(err){
+        					console.log(err);
+        					res.status(400).send(coupon);
+       					}else{
+        					console.log('email sent'+info.response);
+							res.status(200).send(coupon);
+						}
+   					});
    
+  				},(e)=>{
+  					res.status(400).send(e);
+  				});
+  				
      		});
    		}
 	});
