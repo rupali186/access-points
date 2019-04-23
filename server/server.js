@@ -15,7 +15,7 @@ const {coupons}=require('./models/coupon.js');
 const {authenticate}=require('./middleware/authenticate.js');
 const {Status}=require('./constants/stringConstants.js');
 const {Url}=require('./constants/stringConstants.js');
-const {EmailConfig}=require('./config/emailConfig.js');
+//const {EmailConfig}=require('./config/emailConfig.js');
 const {transporter}=require('./notification/nodemailer.js');
 
 const port=process.env.PORT;
@@ -291,7 +291,7 @@ app.post('/coupons', function (req, res) {
   					// res.send(coupon);
   					console.log('coupon saved.');
   					var mailOptions={
-    			 		from:EmailConfig.EMAIL,
+    			 		from:process.env.EMAIL,
    				 		to:req.body.email,
    				 		subject:'sending email',
    				 		html: '<p>Your code is</p>'+code

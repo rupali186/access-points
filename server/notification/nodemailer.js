@@ -1,14 +1,14 @@
 var nodemailer=require('nodemailer');
 
-const {EmailConfig}=require('./../config/emailConfig.js');
+//const {EmailConfig}=require('./../config/emailConfig.js');
 
 
 
 var transporter=nodemailer.createTransport({
 service:'gmail',
 auth:{
-  user:EmailConfig.EMAIL,
-  pass:EmailConfig.PASSWORD
+  user:process.env.EMAIL,
+  pass:process.env.PASSWORD
 }
 });
 
