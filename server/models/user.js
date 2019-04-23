@@ -214,7 +214,7 @@ console.log('index:', indexes);
 var User=mongoose.model('User',UserSchema);
 
 User.on('index', function(error) {
-    console.log(error.message);
+    console.log(error);
 });
 
 module.exports={
