@@ -14,7 +14,8 @@ const PaymentStatus={
 	UNPAID:"unpaid"
 }
 const Url={
-	BASE_URL:"localhost:3000"
+	//BASE_URL:"localhost:3000"
+	BASE_URL:"https://access-points.herokuapp.com"
 }
 module.exports={
 	Status,
