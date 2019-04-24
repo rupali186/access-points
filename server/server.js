@@ -1,7 +1,7 @@
 require('./config/config');
 
 const couponCode = require('coupon-code');//generate unique coupon codes
-const Promise = require('bluebird');
+// const Promise = require('bluebird');
 const express=require('express');
 const _=require('lodash');
 const bodyParser=require('body-parser');
@@ -332,7 +332,7 @@ function check(code) {
   });
 }
 
-var generateUniqueCode = Promise.method(function() {
+var generateUniqueCode = ()=>{
   var code = couponCode.generate({parts:3,partLen:5});
   return check(code)
     .then(function(result) {
@@ -342,7 +342,19 @@ var generateUniqueCode = Promise.method(function() {
         return generateUniqueCode();//else generate a new code 
       }
     });
-});
+};
+
+// var generateUniqueCode = Promise.method(function() {
+//   var code = couponCode.generate({parts:3,partLen:5});
+//   return check(code)
+//     .then(function(result) {
+//       if (result) {
+//         return code;//if it is unique then return the code
+//       } else {
+//         return generateUniqueCode();//else generate a new code 
+//       }
+//     });
+// });
 
 var updateUser=(user,status)=>{
 	console.log("function called");
