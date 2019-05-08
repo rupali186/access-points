@@ -73,12 +73,14 @@ var OrderSchema=new mongoose.Schema({
 	del_mode:{
 		type:String,
 		enum: [DeliveryMode.ACCESS_PTS,DeliveryMode.HOME_DEL,DeliveryMode.STORE_DEL],
-		lowercase:true
+		lowercase:true,
+		required:true
 	},
 	payment_status:{
 		type:String,
 		enum:[PaymentStatus.PAID,PaymentStatus.UNPAID],
-		lowercase:true
+		lowercase:true,
+		required:true
 	}
 	
 });

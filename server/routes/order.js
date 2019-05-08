@@ -10,6 +10,7 @@ const {Order}=require('./../models/order.js');
 const {User}=require('./../models/user.js');
 const {authenticate}=require('./../middleware/authenticate.js');
 const {Status}=require('./../constants/stringConstants.js');
+const {DeliveryMode}=require('./../constants/stringConstants.js');
 const {Url}=require('./../constants/stringConstants.js');
 
 
@@ -56,9 +57,6 @@ router.get('/:id',(req,res)=>{
 });
 
 
-
-
-
 router.post('/',authenticate,(req,res)=>{
 	console.log(req.body);
 	var order=new Order({
@@ -68,11 +66,13 @@ router.post('/',authenticate,(req,res)=>{
 		product_id:req.body.product_id,
 		del_date:req.body.del_date,
 		weight:req.body.weight,
-		user_id:req.user._id
+		user_id:req.user._id,
+		del_mode:req.body.del_mode,
+		payment_status:req.body.payment_status
 	});
 	order.save().then((order)=>{
 		res.send(order);
-		updateUser(req.user,Status.NEW);
+		updateUser(req.user,Status.NEW,order);
 		
 	},(e)=>{
 		res.status(400).send(e);
@@ -100,7 +100,7 @@ router.patch('/:id',authenticate,(req,res)=>{
 		}
 		res.send({order});
 		if(status.localeCompare(Status.FAILED)==0){
-			updateUser(req.user,status);
+			updateUser(req.user,status,order);
 		}
 	}).catch((e)=>{
 		res.status(400).send();
@@ -128,12 +128,18 @@ router.delete('/:id',authenticate,(req,res)=>{
 	});
 });
 
-var updateUser=(user,status)=>{
+var updateUser=(user,status,order)=>{
 	console.log("update user function called");
 	var hexString=user._id.toHexString();
 	var last_order_date=user.last_order_date;
 	var num_orders=user.num_orders;
 	var del_failures_no=user.del_failures_no;
+	var del_mode=order.del_mode;
+	var locker_used=user.locker_used;
+
+	if(locker_used==false&&status.localeCompare(Status.NEW)==0&&del_mode.localeCompare(DeliveryMode.ACCESS_PTS)==0){
+		locker_used=true;
+	}
 
 	if(status.localeCompare(Status.NEW)==0){
 		num_orders=num_orders+1;
@@ -158,7 +164,7 @@ var updateUser=(user,status)=>{
 			last_order_date:last_order_date,
 			del_failures_no:del_failures_no,
 			num_orders:num_orders,
-			locker_used:user.locker_used
+			locker_used:locker_used
     	},
     	json: true 
 	};
