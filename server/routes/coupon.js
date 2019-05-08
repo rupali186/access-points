@@ -4,6 +4,8 @@ const _=require('lodash');
 const bodyParser=require('body-parser');
 const {ObjectID}=require('mongodb');
 var rp = require('request-promise');
+const couponCode = require('coupon-code');
+
 
 const {mongoose}=require('./../db/mongoose.js');
 const {Order}=require('./../models/order.js');
@@ -18,7 +20,7 @@ const {transporter}=require('./../notification/nodemailer.js');
 
 router.post('/', function (req, res) {
     coupons.findOne({
-      user_email:req.body.email
+      user_email:req.body.user_email
     }).then((coupon)=>{
     	if(coupon){
         	console.log("already has a code");
@@ -27,7 +29,7 @@ router.post('/', function (req, res) {
   			generateUniqueCode().then(function(code) {
   				new coupons({
     			 	code:code,
-   				 	user_email:req.body.email,
+   				 	user_email:req.body.user_email,
    				 	type:req.body.type
  		 		}).save()
   				.then((coupon)=>{
@@ -35,8 +37,8 @@ router.post('/', function (req, res) {
   					console.log('coupon saved.');
   					var mailOptions={
     			 		from:process.env.EMAIL,
-   				 		to:req.body.email,
-   				 		subject:'sending email',
+   				 		to:req.body.user_email,
+   				 		subject:'Congratulations you have earned a coupon on Amazon',
    				 		html: '<p>Your code is</p>'+code
    					};
    					transporter.sendMail(mailOptions,function(err,info){
