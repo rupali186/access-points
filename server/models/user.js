@@ -136,9 +136,10 @@ UserSchema.index({del_failures_no:-1,locker_used:1});
 UserSchema.methods.toJSON=function(){
 	var user=this;
 	var userObject=user.toObject();
-	return _.pick(userObject,['_id','u_name','email','phone_no','address','dob','gender','num_orders','acc_creation_date',
+	return _.pick(userObject,['_id','u_name','email','phone_no','address','dob','gender','num_orders','del_failures_no','acc_creation_date',
 		'last_order_date','locker_used','tokens']);
 }
+
 UserSchema.methods.generateAuthToken=function(){
 	var user=this;
 	var access='auth';
@@ -213,9 +214,9 @@ console.log('index:', indexes);
 
 var User=mongoose.model('User',UserSchema);
 
-User.on('index', function(error) {
-    console.log(error);
-});
+// User.on('index', function(error) {
+//     console.log(error);
+// });
 
 module.exports={
 	User
