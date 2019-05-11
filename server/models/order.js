@@ -81,6 +81,74 @@ var OrderSchema=new mongoose.Schema({
 		enum:[PaymentStatus.PAID,PaymentStatus.UNPAID],
 		lowercase:true,
 		required:true
+	},
+	address:{
+		h_no:{
+			type:String,
+			minlength:1,
+			required:true
+		},
+		street:{
+			type:String,
+			minlength:1,
+			uppercase:true,
+			required:true
+		},
+		state:{
+			type:String,
+			minlength:1,
+			uppercase:true,
+			required:true
+		},
+		city:{
+			type:String,
+			minlength:1,
+			uppercase:true,
+			required:true
+		},
+		country:{
+			type:String,
+			minlength:1,
+			uppercase:true,
+			required:true
+		},
+		name:{
+			type:String,
+			minlength:1,
+			uppercase:true,
+			default:this.u_name
+		},
+		landmark:{
+			type:String,
+			minlength:1,
+			uppercase:true,
+			required:true
+		},
+		pincode:{
+			type:Number,
+			minlength:6,
+			min:0,
+			required:true,
+		},
+		contact_no:{
+			type:String,
+			required:true,
+			minlength:10
+		}
+	},
+	access_pt_address:{
+		street:{
+			type:String
+		},
+		city:{
+			type:String
+		},
+		state:{
+			type:String
+		},
+		country:{
+			type:String
+		}
 	}
 	
 });

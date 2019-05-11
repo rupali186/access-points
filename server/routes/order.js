@@ -68,7 +68,9 @@ router.post('/',authenticate,(req,res)=>{
 		weight:req.body.weight,
 		user_id:req.user._id,
 		del_mode:req.body.del_mode,
-		payment_status:req.body.payment_status
+		payment_status:req.body.payment_status,
+		address:req.body.address,
+		access_pt_address:req.body.access_pt_address
 	});
 	order.save().then((order)=>{
 		res.send(order);
