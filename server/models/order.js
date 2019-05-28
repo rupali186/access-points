@@ -137,16 +137,7 @@ var OrderSchema=new mongoose.Schema({
 		}
 	},
 	access_pt_address:{
-		street:{
-			type:String
-		},
-		city:{
-			type:String
-		},
-		state:{
-			type:String
-		},
-		country:{
+		address:{
 			type:String
 		}
 	}
