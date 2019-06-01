@@ -58,6 +58,45 @@ router.post('/', function (req, res) {
    		}
 	});
 });
+
+router.get('/searchCode',(req,res)=>{
+  var code=_.toString(req.query.code);
+  var user_email=_.toString(req.query.user_email);
+  Coupon.findOne({
+    code:code,
+    user_email:user_email
+  }).then((coupon)=>{
+    if(coupon){
+      res.send({coupon});
+    }else{
+      res.status(404).send({});
+    }
+  },(e)=>{
+    res.status(400).send(e);
+  });
+
+});
+
+router.patch('/:id',(req,res)=>{
+  var id=req.params.id;
+  var body=_.pick(req.body,['used']);
+  var used=body.used;
+  console.log(used);
+  if(!ObjectID.isValid(id)){
+    res.status(400).send({});
+    return console.log('ID is invalid');
+  };
+  Coupon.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((coupon)=>{
+    if(!coupon){
+      return res.status(400).send();
+    }
+    res.send({coupon});
+  }).catch((e)=>{
+    res.status(400).send();
+  });
+});
+
+
 var count = 0;
 // this is code that checks uniqueness and returns a promise
 function check(code) {
