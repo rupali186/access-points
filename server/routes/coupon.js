@@ -10,14 +10,14 @@ const couponCode = require('coupon-code');
 const {mongoose}=require('./../db/mongoose.js');
 const {Order}=require('./../models/order.js');
 const {User}=require('./../models/user.js');
-const {coupons}=require('./../models/coupon.js');
+const {Coupon}=require('./../models/coupon.js');
 const {authenticate}=require('./../middleware/authenticate.js');
 const {Status}=require('./../constants/stringConstants.js');
 const {Url}=require('./../constants/stringConstants.js');
 const {transporter}=require('./../notification/nodemailer.js');
 
 router.post('/', function (req, res) {
-    coupons.findOne({
+    Coupon.findOne({
       user_email:req.body.user_email
     }).then((coupon)=>{
     	if(coupon){
@@ -25,7 +25,7 @@ router.post('/', function (req, res) {
       	}
     	else{
   			generateUniqueCode().then(function(code) {
-  				new coupons({
+  				new Coupon({
     			 	code:code,
    				 	user_email:req.body.user_email,
             expiry_date:req.body.expiry_date,

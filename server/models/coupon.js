@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 
-var couponSchema=new mongoose.Schema({
+var CouponSchema=new mongoose.Schema({
 	code:{
 		type:String,
 		required:true
@@ -29,8 +29,8 @@ var couponSchema=new mongoose.Schema({
 
 });
 
-var coupons=mongoose.model('coupons',couponSchema);
+var Coupon=mongoose.model('Coupon',CouponSchema);
 
 module.exports={
-	coupons
+	Coupon
 };
