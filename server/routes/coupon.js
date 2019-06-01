@@ -16,8 +16,6 @@ const {Status}=require('./../constants/stringConstants.js');
 const {Url}=require('./../constants/stringConstants.js');
 const {transporter}=require('./../notification/nodemailer.js');
 
-
-
 router.post('/', function (req, res) {
     coupons.findOne({
       user_email:req.body.user_email
@@ -30,26 +28,27 @@ router.post('/', function (req, res) {
   				new coupons({
     			 	code:code,
    				 	user_email:req.body.user_email,
-   				 	type:req.body.type
+            expiry_date:req.body.expiry_date,
+            discount:req.body.discount
  		 		}).save()
   				.then((coupon)=>{
-  					// res.send(coupon);
   					console.log('coupon saved.');
-  					var mailOptions={
-    			 		from:process.env.EMAIL,
-   				 		to:req.body.user_email,
-   				 		subject:'Congratulations you have earned a coupon on Amazon',
-   				 		html: '<p>Your code is</p>'+code
-   					};
-   					transporter.sendMail(mailOptions,function(err,info){
-       					if(err){
-        					console.log(err);
-        					res.status(400).send(coupon);
-       					}else{
-        					console.log('email sent'+info.response);
-							res.status(200).send(coupon);
-						}
-   					});
+            res.send({coupon});
+  				// 	var mailOptions={
+    		// 	 		from:process.env.EMAIL,
+   			// 	 		to:req.body.user_email,
+   			// 	 		subject:'Congratulations you have earned a coupon on Amazon',
+   			// 	 		html: '<p>Your code is</p>'+code
+   			// 		};
+   			// 		transporter.sendMail(mailOptions,function(err,info){
+      //  					if(err){
+      //   					console.log(err);
+      //   					res.status(400).send(coupon);
+      //  					}else{
+      //   					console.log('email sent'+info.response);
+						// 	res.status(200).send(coupon);
+						// }
+   			// 		});
    
   				},(e)=>{
   					res.status(400).send(e);
