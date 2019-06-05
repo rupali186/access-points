@@ -14,16 +14,16 @@ const {Status}=require('./../constants/stringConstants.js');
 const {Url}=require('./../constants/stringConstants.js');
 
 
-router.get('/me',authenticate,(req,res)=>{
-	res.send(req.user);
-});
-
 router.get('/',(req,res)=>{
 	User.find().then((users)=>{
 		res.send({users});
 	},(e)=>{
 		res.status(400).send(e);
 	});
+});
+
+router.get('/me',authenticate,(req,res)=>{
+	res.send(req.user);
 });
 
 router.get('/new',(req,res)=>{

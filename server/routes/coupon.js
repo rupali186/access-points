@@ -82,12 +82,10 @@ router.patch('/:id',(req,res)=>{
 
 
 var count = 0;
-// this is code that checks uniqueness and returns a promise
 function check(code) {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
       count++;
-      // first resolve with false, on second try resolve with true
       if (count === 1) {
         console.log(code + ' is not unique');
         resolve(false);
@@ -104,9 +102,9 @@ var generateUniqueCode = ()=>{
   return check(code)
     .then(function(result) {
       if (result) {
-        return code;//if it is unique then return the code
+        return code;
       } else {
-        return generateUniqueCode();//else generate a new code 
+        return generateUniqueCode();
       }
     });
 };
