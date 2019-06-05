@@ -34,22 +34,6 @@ router.post('/', function (req, res) {
   				.then((coupon)=>{
   					console.log('coupon saved.');
             res.send({coupon});
-  				// 	var mailOptions={
-    		// 	 		from:process.env.EMAIL,
-   			// 	 		to:req.body.user_email,
-   			// 	 		subject:'Congratulations you have earned a coupon on Amazon',
-   			// 	 		html: '<p>Your code is</p>'+code
-   			// 		};
-   			// 		transporter.sendMail(mailOptions,function(err,info){
-      //  					if(err){
-      //   					console.log(err);
-      //   					res.status(400).send(coupon);
-      //  					}else{
-      //   					console.log('email sent'+info.response);
-						// 	res.status(200).send(coupon);
-						// }
-   			// 		});
-   
   				},(e)=>{
   					res.status(400).send(e);
   				});
