@@ -46,6 +46,7 @@ var UserSchema=new mongoose.Schema({
 	dob:{
 		type: Date,
 		required:true,
+		max:Date.now
 	},
 	gender:{
 		type:String,
@@ -56,6 +57,10 @@ var UserSchema=new mongoose.Schema({
 	last_order_date:{
 		type: Date,
 		default: null
+	},
+	last_coupon_date:{
+		type: Date,
+		default: +new Date() - 36500*24*60*60*1000    //considering 100 years as infinity
 	},
 	del_failures_no:{
 		type:Number,

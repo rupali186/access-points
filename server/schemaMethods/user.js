@@ -6,7 +6,7 @@ module.exports = function(UserSchema) {
 		var user=this;
 		var userObject=user.toObject();
 		return _.pick(userObject,['_id','u_name','email','phone_no','address','dob','gender','num_orders','del_failures_no','acc_creation_date',
-			'last_order_date','locker_used','tokens']);
+			'last_order_date','last_coupon_date','locker_used','tokens']);
 	}
 
 	UserSchema.methods.generateAuthToken=function(){

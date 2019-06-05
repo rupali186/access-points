@@ -28,7 +28,7 @@ router.get('/me',authenticate,(req,res)=>{
 
 router.get('/new',(req,res)=>{
 	var n=_.toNumber(req.query.limit);
-	User.find({num_orders:0}).sort({acc_creation_date:-1}).limit(n).then((users)=>{
+	User.find({num_orders:0}).sort({acc_creation_date:-1,last_coupon_date:1}).limit(n).then((users)=>{
 		res.send({users});
 	},(e)=>{
 		res.status(400).send(e);
@@ -37,7 +37,7 @@ router.get('/new',(req,res)=>{
 
 router.get('/newtolocker',(req,res)=>{
 	var n=_.toNumber(req.query.limit);
-	User.find({num_orders:{ $gte: 1},locker_used:false}).sort({last_order_date:-1}).limit(n).then((users)=>{
+	User.find({num_orders:{ $gte: 1},locker_used:false}).sort({last_order_date:-1,last_coupon_date:1}).limit(n).then((users)=>{
 		res.send({users});
 	},(e)=>{
 		res.status(400).send(e);
@@ -47,7 +47,7 @@ router.get('/newtolocker',(req,res)=>{
 router.get('/target',(req,res)=>{
 	var threshold=_.toNumber(req.query.threshold);
 	var limit=_.toNumber(req.query.limit);
-	User.find({del_failures_no:{ $gte: threshold},locker_used:false}).sort({last_order_date:-1}).limit(limit).then((users)=>{
+	User.find({del_failures_no:{ $gte: threshold},locker_used:false}).sort({last_order_date:-1,last_coupon_date:1}).limit(limit).then((users)=>{
 		res.send({users});
 	},(e)=>{
 		res.status(400).send(e);
