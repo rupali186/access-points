@@ -33,6 +33,19 @@ router.post('/', function (req, res) {
  		 		}).save()
   				.then((coupon)=>{
   					console.log('coupon saved.');
+            const filter = { email: req.body.user_email };
+            const update = { last_coupon_date: new Date() };
+             User.findOneAndUpdate(filter,update,{new:true}).then((user)=>{
+              if(!user){
+                console.log('user update failed. !user');
+                return res.status(400).send();
+              }
+              console.log('user updated.');
+              //res.send({user});
+            }).catch((e)=>{
+              console.log('user update failed.');
+              res.status(400).send();
+            });
             res.send({coupon});
   				},(e)=>{
   					res.status(400).send(e);
