@@ -22,7 +22,7 @@
     "mongodb": "^3.1.13",
     "mongoose": "^5.4.18",
     "node-geocoder": "^3.22.0",
-    "nodemailer": "^6.1.1",
+    "nodemailer": "^6.4.16",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "validator": "^10.11.0"
